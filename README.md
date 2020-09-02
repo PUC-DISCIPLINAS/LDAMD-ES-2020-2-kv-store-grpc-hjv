@@ -1,17 +1,16 @@
-# Nome do projeto
+# Trabalho 3 - Key-Value Store com gRPC
 
-Escreva um ou dois  parágrafo resumindo o objetivo do seu projeto.
+Esse código utiliza o protocolo gRPC para permitir que o cliente adicione uma chave e valor. Ademais, não há a implementação de buckets de dados para cada cliente, sendo assim, todos os clientes podem acessar uma base de dados comum.
 
 ## Alunos integrantes da equipe
 
-* Nome completo do aluno 1
-* Nome completo do aluno 2
-* Nome completo do aluno 3
-* Nome completo do aluno 4
+* Henrique Freire dos Santos
+* João Américo Martins Caiafa de Andrade
+* Maria Verônica Santos Soares
 
-## Professores responsáveis
+## Professor responsáveis
 
-* Nome completo do professor 1
+* Hugo Bastos de Paula
 * Nome completo do professor 2
 
 ## Instruções de utilização
