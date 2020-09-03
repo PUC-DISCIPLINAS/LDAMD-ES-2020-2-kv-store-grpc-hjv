@@ -24,7 +24,7 @@ Neste trabalho, será necessário utilizar o protocolo gRPC para permitir que o 
 * João Américo Martins Caiafa de Andrade ([Leusd](https://github.com/Leusd))
 * Maria Verônica Santos Soares ([mveronicasoares](https://github.com/mveronicasoares))
 
-## Professor responsáveis
+## Professor responsável
 
 * Hugo Bastos de Paula ([hugodepaula](https://github.com/hugodepaula))
 
