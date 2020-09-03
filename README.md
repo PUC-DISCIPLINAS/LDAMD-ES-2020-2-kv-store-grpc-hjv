@@ -15,8 +15,8 @@ Neste trabalho, será necessário utilizar o protocolo gRPC para permitir que o 
 
 ## Features
 
-- [ ] put(key, value)
-- [ ] get(key) : value
+* put(key, value)
+* get(key) : value
 
 ## Alunos integrantes da equipe
 
