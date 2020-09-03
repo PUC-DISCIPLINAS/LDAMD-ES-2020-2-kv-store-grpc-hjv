@@ -11,7 +11,7 @@ Esse trabalho visa aplicar conhecimentos da matéria de LDAMD utilizando gRPC pa
 
 ## Instruções
 
-- Neste trabalho, será necessário utilizar o protocolo gRPC para permitir que o cliente adicione uma chave e valor. Neste trabalho não será necessário implementar buckets de dados para cada cliente. Ou seja, todos os clientes poderão acessar uma base de dados comum.
+Neste trabalho, será necessário utilizar o protocolo gRPC para permitir que o cliente adicione uma chave e valor. Neste trabalho não será necessário implementar buckets de dados para cada cliente. Ou seja, todos os clientes poderão acessar uma base de dados comum.
 
 ## Features
 
@@ -21,8 +21,8 @@ Esse trabalho visa aplicar conhecimentos da matéria de LDAMD utilizando gRPC pa
 ## Alunos integrantes da equipe
 
 * Henrique Freire dos Santos ([henfreire](https://github.com/henfreire))
-* João Américo Martins Caiafa de Andrade - ([Leusd](https://github.com/Leusd))
-* Maria Verônica Santos Soares - ([mveronicasoares](https://github.com/mveronicasoares))
+* João Américo Martins Caiafa de Andrade ([Leusd](https://github.com/Leusd))
+* Maria Verônica Santos Soares ([mveronicasoares](https://github.com/mveronicasoares))
 
 ## Professor responsáveis
 
