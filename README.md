@@ -11,7 +11,6 @@ Esse código utiliza o protocolo gRPC para permitir que o cliente adicione uma c
 ## Professor responsáveis
 
 * Hugo Bastos de Paula
-* Nome completo do professor 2
 
 ## Instruções de utilização
 
