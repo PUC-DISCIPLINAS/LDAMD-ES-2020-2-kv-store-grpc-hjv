@@ -3,7 +3,7 @@
 Esse trabalho aplica conhecimentos da matéria de Laboratório de Desenvolvimento de Aplicações Moveis e Distribuídas, utilizando gRPC para desenvolver um Key-Value store in memory.
 
 <h1 align="center">
-    <a href="https://grpc.io/">gRPC 🔗</a>
+    <a href="https://grpc.io/">gRPC🔗</a>
 </h1>
 
 <p align="center"> gRPC é um serviço de alto desempenho para atender chamadas RPC (Remote Call Procedures) </p>
