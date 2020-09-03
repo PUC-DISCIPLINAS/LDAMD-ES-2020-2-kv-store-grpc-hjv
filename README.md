@@ -6,7 +6,7 @@ Esse trabalho aplica conhecimentos da matéria de Laboratório de Desenvolviment
     <a href="https://grpc.io/">🔗 gRPC</a>
 </h1>
 
-<p align="center"> gRPC é um serviço de alto desempenho para atender chamadas RPC (Remote Call Procedures). </p>
+<p align="center"> gRPC é um serviço de alto desempenho para atender chamadas RPC (Remote Call Procedures) </p>
 <p align="center">
 
 ## Instruções
