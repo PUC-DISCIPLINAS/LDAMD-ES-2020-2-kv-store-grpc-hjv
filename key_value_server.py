@@ -16,8 +16,10 @@ args = []
 store = {}
 peers = []
 
+
 class ConfigError(Exception):
     pass
+
 
 def setCustomLogger(name):
     formatter = logging.Formatter(fmt="%(asctime)s: %(message)s", datefmt='%Y-%m-%d %H:%M:%S')
@@ -28,11 +30,14 @@ def setCustomLogger(name):
     logger.addHandler(screen_handler)
     return logger
 
-logger = setCustomLogger("KV")
+
+logger = setCustomLogger("KeyValueStore")
+
 
 def explain(msg):
-  if args.verbose:
-    logger.info("%s" % msg)
+    if args.verbose:
+        logger.info("%s" % msg)
+
 
 def parseArgs():
     global args
@@ -45,18 +50,19 @@ def parseArgs():
                         help="Verbosely list operations performed.")
     args = parser.parse_args()
 
-    if ip.isValidIP(args.ip) == False:
+    if not key_value_ip.isValidIP(args.ip):
         raise ConfigError("not a valid IP address: '%s'" % args.ip)
 
     for peerIP in args.peers:
-        if ip.isValidIP(peerIP) == False:
+        if not key_value_ip.isValidIP(peerIP):
             raise ConfigError("not a valid peer IP address: '%s'" % peerIP)
         if peerIP != args.ip:
-            if (peerIP in peers) == False:
+            if not (peerIP in peers):
                 peers.append(peerIP)
                 introduceOurself(peerIP)
 
     return args
+
 
 class Storer(key_value_pb2_grpc.ClientServicer):
     def Get(self, request, context):
@@ -78,39 +84,42 @@ class Storer(key_value_pb2_grpc.ClientServicer):
             updatePeers(key, value)
         else:
             explain("received peer update for key '{0:s}': new value = '{1:s}'".format(key, value))
-        return kv_pb2.SetReply(value=value)
+        return key_value_pb2.PutReply(value=value)
 
     def List(self, request, context):
         explain("received LIST request")
-        return kv_pb2.StoreReply(store=store)
+        return key_value_pb2.StoreReply(store=store)
 
     def RegisterWithPeer(self, request, context):
         peerIP = request.ip
         explain("received new peer registration: %s" % peerIP)
-        if ip.isValidIP(peerIP):
+        if key_value_ip.isValidIP(peerIP):
             if (peerIP in peers) == False:
                 peers.append(peerIP)
-        return kv_pb2.StoreReply(store=store)
+        return key_value_pb2.StoreReply(store=store)
+
 
 def introduceOurself(peerIP):
     global store
     with grpc.insecure_channel(peerIP) as channel:
-        stub = kv_pb2_grpc.ClientStub(channel)
+        stub = key_value_pb2_grpc.ClientStub(channel)
         explain("registering with peer %s..." % peerIP)
-        response = stub.RegisterWithPeer(kv_pb2.IP(ip=args.ip))
+        response = stub.RegisterWithPeer(key_value_pb2.IP(ip=args.ip))
         for key in response.store:
             store[key] = response.store[key]
 
+
 def updatePeers(key, value):
-  for peerIP in peers:
-    explain("updating peer '{0:s}': '${1:s}' = '${2:s}'".format(peerIP, key, value))
-    with grpc.insecure_channel(peerIP) as channel:
-        stub = kv_pb2_grpc.ClientStub(channel)
-        stub.Set(kv_pb2.SetKey(key=key, value=value, broadcast=False))
+    for peerIP in peers:
+        explain("updating peer '{0:s}': '${1:s}' = '${2:s}'".format(peerIP, key, value))
+        with grpc.insecure_channel(peerIP) as channel:
+            stub = key_value_pb2_grpc.ClientStub(channel)
+            stub.Set(key_value_pb2.PutKey(key=key, value=value, broadcast=False))
+
 
 def serve(ip):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    kv_pb2_grpc.add_ClientServicer_to_server(Storer(), server)
+    key_value_pb2_grpc.add_ClientServicer_to_server(Storer(), server)
     server.add_insecure_port(ip)
     print("Listening on %s..." % ip)
     server.start()
@@ -120,6 +129,7 @@ def serve(ip):
             time.sleep(_ONE_DAY_IN_SECONDS)
     except KeyboardInterrupt:
         server.stop(0)
+
 
 if __name__ == "__main__":
     try:

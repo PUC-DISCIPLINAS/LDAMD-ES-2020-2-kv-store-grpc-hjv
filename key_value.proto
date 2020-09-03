@@ -36,3 +36,5 @@ message IP {
 message StoreReply {
     map<string, string> store = 1;
 }
+
+option py_generic_services = true;

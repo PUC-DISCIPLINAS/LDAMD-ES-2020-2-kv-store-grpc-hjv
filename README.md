@@ -32,6 +32,6 @@ Neste trabalho, será necessário utilizar o protocolo gRPC para permitir que o 
 
 Código pb2 gerado a partir do arquivo ".proto" e o comando:
 ```
-$ protoc --proto_path=src --python_out=build src/.proto
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. key_value.proto
 ```
 
