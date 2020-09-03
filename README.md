@@ -14,4 +14,8 @@ Esse código utiliza o protocolo gRPC para permitir que o cliente adicione uma c
 
 ## Instruções de utilização
 
-Assim que a primeira versão do sistema estiver disponível, deverá complementar com as instruções de utilização. Descreva como instalar eventuais dependências e como executar a aplicação.
+Código pb2 gerado a partir do arquivo ".proto" e o comando:
+```
+$ protoc --proto_path=src --python_out=build src/.proto
+```
+
