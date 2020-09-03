@@ -1,6 +1,6 @@
 # Trabalho 3 - Key-Value Store com gRPC
 
-Esse trabalho visa aplicar conhecimentos da matéria de LDAMD utilizando gRPC para desenvolver um Key-Value store in memory.
+Esse trabalho aplica conhecimentos da matéria de Laboratório de Desenvolvimento de Aplicações Moveis e Distribuídas, utilizando gRPC para desenvolver um Key-Value store in memory.
 
 <h1 align="center">
     <a href="https://grpc.io/">🔗 gRPC</a>
