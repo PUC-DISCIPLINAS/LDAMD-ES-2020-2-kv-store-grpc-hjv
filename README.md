@@ -34,4 +34,22 @@ Código pb2 gerado a partir do arquivo ".proto" e o comando:
 ```
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. key_value.proto
 ```
+1. Executar ```key_value_server.py```
 
+    Opções de argumentos:
+    
+    * ``` -ip "valor do IP"```, se não for passado como argumento o sistema usará endereço IP padrão.
+    * ``` peers "valor do IP"```, se não for passado como argumento o sistema usará endereço IP padrão.
+    * ``` -verbose ou -v```, lista todas as mensagens salvas no log do servidor.  
+    
+2. Executar ```key_value_client.py```
+
+    Opções de argumentos:
+    
+    * ``` -ip ou -i "valor do IP"```, se não for passado como argumento o sistema usará endereço IP padrão.
+    * ``` -get ou - g "key"```, retorna o value salvo a key passada. 
+    * ``` -put ou -p "key,value"```, salva a key e value passados 
+    
+        **OBS: e caso a key já tenha sido passada anteriormente o value salvo é atualizado para o novo valor.**
+    * ``` -list ou -l```, lista todos os key e value salvos.
+    * ``` -verbose ou -v```, lista todas as mensagens salvas no log do servidor.    
