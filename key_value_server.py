@@ -1,10 +1,10 @@
-from concurrent import futures
 import argparse
-import grpc
 import logging
-import socket
 import sys
 import time
+from concurrent import futures
+
+import grpc
 
 import key_value_ip
 import key_value_pb2
@@ -44,18 +44,18 @@ def parseArgs():
     parser = argparse.ArgumentParser(description="Key-value store server.")
     parser.add_argument("peers", nargs="*", metavar="PEER",
                         help="Set peer IP address (IPv4 only!).")
-    parser.add_argument("--ip", default="127.0.0.1:4000",
+    parser.add_argument("-ip", default="127.0.0.1:4000",
                         help="Set server IP address (IPv4 only!).")
-    parser.add_argument("--verbose", "-v", action="store_true",
+    parser.add_argument("-verbose", "-v", action="store_true",
                         help="Verbosely list operations performed.")
     args = parser.parse_args()
 
     if not key_value_ip.isValidIP(args.ip):
-        raise ConfigError("not a valid IP address: '%s'" % args.ip)
+        raise ConfigError("Endereco IP invalido: '%s'" % args.ip)
 
     for peerIP in args.peers:
         if not key_value_ip.isValidIP(peerIP):
-            raise ConfigError("not a valid peer IP address: '%s'" % peerIP)
+            raise ConfigError("Endereco IP do par invalido: '%s'" % peerIP)
         if peerIP != args.ip:
             if not (peerIP in peers):
                 peers.append(peerIP)
@@ -68,26 +68,26 @@ class Storer(key_value_pb2_grpc.ClientServicer):
     def Get(self, request, context):
         key = request.key
         if key in store:
-            explain("received GET request for key '{0:s}': value = '{1:s}'".format(key, store[key]))
+            explain("Recebido requisicao GET para key = '{0:s}': value = '{1:s}'".format(key, store[key]))
             return key_value_pb2.GetReply(value=store[key], defined=True)
         else:
-            explain("received GET request for key '%s': value = undefined" % key)
+            explain("Recebido requisicao GET para key = '%s': value = indefinido" % key)
             return key_value_pb2.GetReply(value=None, defined=False)
 
-    def Set(self, request, context):
+    def Put(self, request, context):
         key = request.key
         value = request.value
         broadcast = request.broadcast
         store[key] = value
         if broadcast:
-            explain("received SET request for key '{0:s}': new value = '{1:s}'".format(key, value))
+            explain("Recebido requisicao PUT para key '{0:s}': novo value = '{1:s}'".format(key, value))
             updatePeers(key, value)
         else:
-            explain("received peer update for key '{0:s}': new value = '{1:s}'".format(key, value))
+            explain("Recebido combinacao key = '{0:s}': novo value = '{1:s}' para atualizacao".format(key, value))
         return key_value_pb2.PutReply(value=value)
 
     def List(self, request, context):
-        explain("received LIST request")
+        explain("Recebido requisicao LIST")
         return key_value_pb2.StoreReply(store=store)
 
     def RegisterWithPeer(self, request, context):
@@ -103,7 +103,7 @@ def introduceOurself(peerIP):
     global store
     with grpc.insecure_channel(peerIP) as channel:
         stub = key_value_pb2_grpc.ClientStub(channel)
-        explain("registering with peer %s..." % peerIP)
+        explain("Registrando com combinacao %s..." % peerIP)
         response = stub.RegisterWithPeer(key_value_pb2.IP(ip=args.ip))
         for key in response.store:
             store[key] = response.store[key]
@@ -111,7 +111,7 @@ def introduceOurself(peerIP):
 
 def updatePeers(key, value):
     for peerIP in peers:
-        explain("updating peer '{0:s}': '${1:s}' = '${2:s}'".format(peerIP, key, value))
+        explain("Atualizando combinacao  '{0:s}': '${1:s}' = '${2:s}'".format(peerIP, key, value))
         with grpc.insecure_channel(peerIP) as channel:
             stub = key_value_pb2_grpc.ClientStub(channel)
             stub.Set(key_value_pb2.PutKey(key=key, value=value, broadcast=False))
@@ -121,7 +121,7 @@ def serve(ip):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     key_value_pb2_grpc.add_ClientServicer_to_server(Storer(), server)
     server.add_insecure_port(ip)
-    print("Listening on %s..." % ip)
+    print("Escutando em %s..." % ip)
     server.start()
 
     try:
@@ -136,4 +136,4 @@ if __name__ == "__main__":
         args = parseArgs()
         serve(args.ip)
     except ConfigError as e:
-        print("error:"), e.args[0]
+        print("Erro:"), e.args[0]
