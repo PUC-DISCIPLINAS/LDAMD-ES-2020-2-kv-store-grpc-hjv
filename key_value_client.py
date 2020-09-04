@@ -9,9 +9,12 @@ import re
 import sys
 import time
 
+
 args = {}
+
 class ConfigError(Exception):
     pass
+
 def setCustomLogger(name):
     formatter = logging.Formatter(fmt="%(asctime)s: %(message)s", datefmt='%Y-%m-%d %H:%M:%S')
     screen_handler = logging.StreamHandler(stream=sys.stdout)
@@ -20,10 +23,13 @@ def setCustomLogger(name):
     logger.setLevel(logging.INFO)
     logger.addHandler(screen_handler)
     return logger
+
 logger = setCustomLogger("KV")
+
 def explain(msg):
   if args.verbose:
     logger.info("%s" % msg)
+
 def parseArgs():
     global args
     parser = argparse.ArgumentParser(description="Send request(s) to a key-value store server.")
@@ -38,10 +44,12 @@ def parseArgs():
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="verbosely list operations performed.")
     args = parser.parse_args()
+
     if args.ip == None:
         args.ip = ["127.0.0.1:4000"]
     if key_value_ip.isValidIP(args.ip[0]) == False:
         raise ConfigError("not a valid server IP address: '%s'" % args.ip[0])
+
 def doGet(ip, key):
     explain("sending GET request to {0:s} for key '{1:s}'...".format(ip[0], key))
     with grpc.insecure_channel(args.ip[0]) as channel:
@@ -51,11 +59,13 @@ def doGet(ip, key):
             print("'%s'='%s'" % (key, response.value))
         else:
             print("'%s': undefined" % key)
+
 def doSet(ip, key, value):
     explain("sending SET request to {0:s} for key '{1:s}'...".format(ip[0], key))
     with grpc.insecure_channel(args.ip[0]) as channel:
         stub = key_value_pb2_grpc.ClientStub(channel)
         stub.Set(key_value_pb2.SetKey(key=key, value=value, broadcast=True))
+
 def doList(ip):
     explain("sending LIST request to %s..." % ip[0])
     with grpc.insecure_channel(args.ip[0]) as channel:
@@ -65,17 +75,20 @@ def doList(ip):
         for key in response.store:
             print("  - '{0:s}'='{1:s}'".format(key, response.store[key]))
         print("-- end of key-value dump --")
+
 def handleGet(ip, key):
     regex = re.compile('^[a-zA-Z0-9_]+$')
     if regex.match(key) == False:
         raise ConfigError("invalid --get: expected '--get KEY'; got '--get %s'" % key)
     doGet(ip, key)
+
 def handleSet(ip, kv):
     regex = re.compile('^([a-zA-Z0-9_]+)=([a-zA-Z0-9_]+)$')
     m = regex.match(kv)
     if m == None:
          raise ConfigError("invalid --set: expected '--set KEY=VALUE'; got '--get %s'" % kv)
     doSet(ip, m.group(1), m.group(2))
+
 def run():
     try:
         parseArgs()
@@ -91,5 +104,6 @@ def run():
         print("error:", e.args[0])
     except grpc.RpcError as e:
         print("error: {0:s}: {1:s}".format(e.code(), e.details()))
+
 if __name__ == '__main__':
     run()
