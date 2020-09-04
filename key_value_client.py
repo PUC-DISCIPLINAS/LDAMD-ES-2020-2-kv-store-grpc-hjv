@@ -34,23 +34,18 @@ def explain(msg):
 
 def parseArgs():
     global args
-    parser = argparse.ArgumentParser(description="Send request(s) to a key-value store server.")
-    parser.add_argument("-ip", "-i", nargs=1, action="store",
-                        help="set server IP address (IPv4 only!).")
-    parser.add_argument("-get", "-g", nargs=1, action="append",
-                        help="get value associated with key.")
-    parser.add_argument("-put", "-p", nargs=1, action="append",
-                        help="set a key-value pair.")
-    parser.add_argument("-list", "-l", action="store_true",
-                        help="get key-value pairs defined on server.")
-    parser.add_argument("-verbose", "-v", action="store_true",
-                        help="verbosely list operations performed.")
+    parser = argparse.ArgumentParser(description="Envia solicitacao(oes) para um servidor de key value store.")
+    parser.add_argument("-ip", "-i", nargs=1, action="store")
+    parser.add_argument("-get", "-g", nargs=1, action="append")
+    parser.add_argument("-put", "-p", nargs=1, action="append")
+    parser.add_argument("-list", "-l", action="store_true",)
+    parser.add_argument("-verbose", "-v", action="store_true")
     args = parser.parse_args()
 
     if args.ip == None:
         args.ip = ["127.0.0.1:4000"]
     if not key_value_ip.isValidIP(args.ip[0]):
-        raise ConfigError("not a valid server IP address: '%s'" % args.ip[0])
+        raise ConfigError("nao eh um IP de servidor valido: '%s'" % args.ip[0])
 
 def doGet(ip, key):
     explain("enviando requisicao GET para {0:s} com a key '{1:s}'...".format(ip[0], key))
@@ -60,10 +55,10 @@ def doGet(ip, key):
         if response.defined:
             print("\tkey = '{0:s}'\t value = '{1:s}'".format(key, response.value))
         else:
-            print("'%s': undefined" % key)
+            print("'%s': indefinido" % key)
 
 def doSet(ip, key, value):
-    explain("sending SET request to {0:s} for key '{1:s}'...".format(ip[0], key))
+    explain("enviando requisicao SET para {0:s} com a key '{1:s}'...".format(ip[0], key))
     with grpc.insecure_channel(args.ip[0]) as channel:
         stub = key_value_pb2_grpc.ClientStub(channel)
         stub.Set(key_value_pb2.SetKey(key=key, value=value, broadcast=True))
@@ -73,10 +68,10 @@ def doList(ip):
     with grpc.insecure_channel(args.ip[0]) as channel:
         stub = key_value_pb2_grpc.ClientStub(channel)
         response = stub.List(key_value_pb2.Void())
-        print("Estes sao os Key-value salvos em %s:" % ip[0])
+        print("Estes sao os key value salvos em %s:" % ip[0])
         for key in response.store:
             print("  - '{0:s}'='{1:s}'".format(key, response.store[key]))
-        print("-- end of key-value dump --")
+        print("-- fim da listagem de key value --")
 
 def handleGet(ip, key):
     regex = re.compile('^[a-zA-Z0-9_]+$')
@@ -84,7 +79,7 @@ def handleGet(ip, key):
         raise ConfigError("Expressao GET incorreta: esperado '-get KEY'; recebido '-get %s'" % key)
     doGet(ip, key)
 
-def handleSet(ip, kv):
+def handlePut(ip, kv):
     regex = re.compile('^([a-zA-Z0-9_]+)=([a-zA-Z0-9_]+)$')
     m = regex.match(kv)
     if m == None:
