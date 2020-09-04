@@ -32,23 +32,23 @@ class ClientServicer(object):
 
   def Get(self, request, context):
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    context.set_details('Metodo não implementado!')
+    raise NotImplementedError('Metodo não implementado!')
 
   def Set(self, request, context):
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    context.set_details('Metodo não implementado!')
+    raise NotImplementedError('Metodo não implementado!')
 
   def List(self, request, context):
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    context.set_details('Metodo não implementado!')
+    raise NotImplementedError('Metodo não implementado!')
 
   def RegisterWithPeer(self, request, context):
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
+    context.set_details('Metodo não implementado!')
+    raise NotImplementedError('Metodo não implementado!')
 
 
 def add_ClientServicer_to_server(servicer, server):

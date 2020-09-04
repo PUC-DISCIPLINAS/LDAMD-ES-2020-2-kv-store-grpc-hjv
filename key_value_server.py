@@ -41,13 +41,10 @@ def explain(msg):
 
 def parseArgs():
     global args
-    parser = argparse.ArgumentParser(description="Key-value store server.")
-    parser.add_argument("peers", nargs="*", metavar="PEER",
-                        help="Set peer IP address (IPv4 only!).")
-    parser.add_argument("-ip", default="127.0.0.1:4000",
-                        help="Set server IP address (IPv4 only!).")
-    parser.add_argument("-verbose", "-v", action="store_true",
-                        help="Verbosely list operations performed.")
+    parser = argparse.ArgumentParser(description="Servidor de key value store.")
+    parser.add_argument("peers", nargs="*", metavar="PEER")
+    parser.add_argument("-ip", default="127.0.0.1:4000")
+    parser.add_argument("-verbose", "-v", action="store_true")
     args = parser.parse_args()
 
     if not key_value_ip.isValidIP(args.ip):
@@ -92,7 +89,7 @@ class Storer(key_value_pb2_grpc.ClientServicer):
 
     def RegisterWithPeer(self, request, context):
         peerIP = request.ip
-        explain("received new peer registration: %s" % peerIP)
+        explain("recebido novo key value para registro: %s" % peerIP)
         if key_value_ip.isValidIP(peerIP):
             if (peerIP in peers) == False:
                 peers.append(peerIP)
