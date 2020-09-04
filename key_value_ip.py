@@ -1,5 +1,6 @@
 import socket
 
+
 def isValidIP(ip):
     ad = ip.split(":")
     if len(ad) > 2:
@@ -9,7 +10,7 @@ def isValidIP(ip):
     except socket.error:
         return False
     if len(ad) > 1:
-        if len(ad[1])>0:
+        if len(ad[1]) > 0:
             try:
                 _ = int(ad[1])
                 return True

@@ -11,12 +11,11 @@ import key_value_ip
 import key_value_pb2
 import key_value_pb2_grpc
 
-args = {}
 
+args = {}
 
 class ConfigError(Exception):
     pass
-
 
 def setCustomLogger(name):
     formatter = logging.Formatter(fmt="%(asctime)s: %(message)s", datefmt='%Y-%m-%d %H:%M:%S')
@@ -27,14 +26,11 @@ def setCustomLogger(name):
     logger.addHandler(screen_handler)
     return logger
 
-
-logger = setCustomLogger("KeyValueStore")
-
+logger = setCustomLogger("KV")
 
 def explain(msg):
-    if args.verbose:
-        logger.info("%s" % msg)
-
+  if args.verbose:
+    logger.info("%s" % msg)
 
 def parseArgs():
     global args
@@ -50,11 +46,11 @@ def parseArgs():
     parser.add_argument("-verbose", "-v", action="store_true",
                         help="verbosely list operations performed.")
     args = parser.parse_args()
-    if args.ip is None:
+
+    if args.ip == None:
         args.ip = ["127.0.0.1:4000"]
     if not key_value_ip.isValidIP(args.ip[0]):
         raise ConfigError("not a valid server IP address: '%s'" % args.ip[0])
-
 
 def doGet(ip, key):
     explain("enviando requisicao GET para {0:s} com a key '{1:s}'...".format(ip[0], key))
@@ -64,15 +60,13 @@ def doGet(ip, key):
         if response.defined:
             print("\tkey = '{0:s}'\t value = '{1:s}'".format(key, response.value))
         else:
-            print("'%s': indefinido" % key)
+            print("'%s': undefined" % key)
 
-
-def doPut(ip, key, value):
-    explain("enviando requisicao Put para {0:s} com a key '{1:s} e value '{2:s}'...".format(ip[0], key, value))
+def doSet(ip, key, value):
+    explain("sending SET request to {0:s} for key '{1:s}'...".format(ip[0], key))
     with grpc.insecure_channel(args.ip[0]) as channel:
         stub = key_value_pb2_grpc.ClientStub(channel)
-        stub.Set(key_value_pb2.PutKey(key=key, value=value, broadcast=True))
-
+        stub.Set(key_value_pb2.SetKey(key=key, value=value, broadcast=True))
 
 def doList(ip):
     explain("enviando requisicao LIST para %s..." % ip[0])
@@ -81,9 +75,8 @@ def doList(ip):
         response = stub.List(key_value_pb2.Void())
         print("Estes sao os Key-value salvos em %s:" % ip[0])
         for key in response.store:
-            print("\tkey = '{0:s}'\t value = '{1:s}'".format(key, response.store[key]))
-        print("\t------fim da lista------")
-
+            print("  - '{0:s}'='{1:s}'".format(key, response.store[key]))
+        print("-- end of key-value dump --")
 
 def handleGet(ip, key):
     regex = re.compile('^[a-zA-Z0-9_]+$')
@@ -91,14 +84,12 @@ def handleGet(ip, key):
         raise ConfigError("Expressao GET incorreta: esperado '-get KEY'; recebido '-get %s'" % key)
     doGet(ip, key)
 
-
-def handlePut(ip, kv):
-    regex = re.compile('^([a-zA-Z0-9_]+),([a-zA-Z0-9_]+)$')
+def handleSet(ip, kv):
+    regex = re.compile('^([a-zA-Z0-9_]+)=([a-zA-Z0-9_]+)$')
     m = regex.match(kv)
     if m == None:
-        raise ConfigError("Expressao PUT incorreta: esperado '-put KEY,VALUE'; recebido '-put %s'" % kv)
-    doPut(ip, m.group(1), m.group(2))
-
+         raise ConfigError("invalid --set: expected '--set KEY=VALUE'; got '--get %s'" % kv)
+    doSet(ip, m.group(1), m.group(2))
 
 def run():
     try:
@@ -115,7 +106,6 @@ def run():
         print("error:", e.args[0])
     except grpc.RpcError as e:
         print("error: {0:s}: {1:s}".format(e.code(), e.details()))
-
 
 if __name__ == '__main__':
     run()

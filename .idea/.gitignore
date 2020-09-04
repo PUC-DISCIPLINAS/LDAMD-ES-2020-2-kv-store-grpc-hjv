@@ -1,0 +1,8 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../../../:\Documents\Eng. de Software\2020-02\Laboratório de Desenvolvimento e Aplicações Distribuídas\Trabalho 3 - Key-Value Store com gRPC\kv-store-grpc-hjv\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
