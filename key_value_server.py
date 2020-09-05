@@ -89,7 +89,7 @@ class Storer(key_value_pb2_grpc.ClientServicer):
 
     def RegisterWithPeer(self, request, context):
         peerIP = request.ip
-        explain("recebido novo key value para registro: %s" % peerIP)
+        explain("Recebido novo key value para registro: %s" % peerIP)
         if key_value_ip.isValidIP(peerIP):
             if (peerIP in peers) == False:
                 peers.append(peerIP)
